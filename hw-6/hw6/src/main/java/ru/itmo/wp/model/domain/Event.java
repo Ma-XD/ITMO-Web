@@ -3,10 +3,14 @@ package ru.itmo.wp.model.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-public class User implements Serializable {
+public class Event implements Serializable {
+    public enum EventType{
+        ENTER, LOGOUT
+    }
+
     private long id;
-    private String login;
-    private String email;
+    private long userId;
+    private EventType type;
     private Date creationTime;
 
     public long getId() {
@@ -17,20 +21,20 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
-    public String getEmail() {
-        return email;
+    public EventType getType() {
+        return type;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setType(EventType type) {
+        this.type = type;
     }
 
     public Date getCreationTime() {

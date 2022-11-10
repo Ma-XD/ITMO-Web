@@ -43,10 +43,38 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User findByEmail(String email) {
+        try (Connection connection = DATA_SOURCE.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE email=?")) {
+                statement.setString(1, email);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return toUser(statement.getMetaData(), resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Can't find User.", e);
+        }
+    }
+    @Override
     public User findByLoginAndPasswordSha(String login, String passwordSha) {
         try (Connection connection = DATA_SOURCE.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE login=? AND passwordSha=?")) {
                 statement.setString(1, login);
+                statement.setString(2, passwordSha);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return toUser(statement.getMetaData(), resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Can't find User.", e);
+        }
+    }
+
+    @Override
+    public User findByEmailAndPasswordSha(String email, String passwordSha) {
+        try (Connection connection = DATA_SOURCE.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE email=? AND passwordSha=?")) {
+                statement.setString(1, email);
                 statement.setString(2, passwordSha);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     return toUser(statement.getMetaData(), resultSet);
@@ -75,6 +103,23 @@ public class UserRepositoryImpl implements UserRepository {
         return users;
     }
 
+    @Override
+    public int findCount() {
+        try (Connection connection = DATA_SOURCE.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM User")) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet.getInt(1);
+                    }
+                    return 0;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Can't find User.", e);
+        }
+    }
+
+
     private User toUser(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
@@ -88,6 +133,9 @@ public class UserRepositoryImpl implements UserRepository {
                     break;
                 case "login":
                     user.setLogin(resultSet.getString(i));
+                    break;
+                case "email":
+                    user.setEmail(resultSet.getString(i));
                     break;
                 case "creationTime":
                     user.setCreationTime(resultSet.getTimestamp(i));
@@ -104,11 +152,12 @@ public class UserRepositoryImpl implements UserRepository {
     public void save(User user, String passwordSha) {
         try (Connection connection = DATA_SOURCE.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO `User` (`login`, `passwordSha`, `creationTime`) VALUES (?, ?, NOW())",
+                    "INSERT INTO `User` (`login`, `email`, `passwordSha`, `creationTime`) VALUES (?, ?, ?, NOW())",
                     Statement.RETURN_GENERATED_KEYS
             )) {
                 statement.setString(1, user.getLogin());
-                statement.setString(2, passwordSha);
+                statement.setString(2, user.getEmail());
+                statement.setString(3, passwordSha);
                 if (statement.executeUpdate() != 1) {
                     throw new RepositoryException("Can't save User.");
                 } else {
