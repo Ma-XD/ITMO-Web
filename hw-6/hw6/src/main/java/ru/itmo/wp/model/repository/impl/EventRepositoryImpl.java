@@ -12,7 +12,8 @@ public class EventRepositoryImpl implements EventRepository {
 
     private final DataSource DATA_SOURCE = DatabaseUtils.getDataSource();
 
-    private Event find(long id) {
+    @Override
+    public Event find(long id) {
         try (Connection connection = DATA_SOURCE.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM Event WHERE id=?")) {
                 statement.setLong(1, id);

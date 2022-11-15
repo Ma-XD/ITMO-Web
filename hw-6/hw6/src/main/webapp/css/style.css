@@ -130,6 +130,24 @@ aside section .footer a:after {
     content: " →";
 }
 
+.talk .form-box {
+    width: 100%;
+}
+
+.talk .form-box .field .value select {
+    width: 8rem;
+}
+
+.talk .form-box .field .value textarea {
+    max-width: 30rem;
+    max-height: 7.5rem;
+}
+
+.talk .datatable {
+    margin-top: 2rem;
+}
+
+
 .message {
     margin: 1rem 0;
     padding: 0.5rem;
