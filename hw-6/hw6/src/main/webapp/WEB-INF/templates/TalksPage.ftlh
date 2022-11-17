@@ -12,7 +12,7 @@
                     <input type="hidden" name="action" value="send"/>
                     <div class="field">
                         <div class="name">
-                            <label for="target_user_idr">Send to</label>
+                            <label for="target_user_id">Send to</label>
                         </div>
                         <div class="value">
                             <select id="target_user_id" name="target_user_id">
