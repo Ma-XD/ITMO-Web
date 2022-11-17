@@ -3,7 +3,6 @@ package ru.itmo.wp.web;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import freemarker.template.*;
-import ru.itmo.wp.model.domain.User;
 import ru.itmo.wp.model.exception.ValidationException;
 import ru.itmo.wp.web.annotation.Json;
 import ru.itmo.wp.web.exception.NotFoundException;
@@ -125,13 +124,16 @@ public class FrontServlet extends HttpServlet {
             throw new NotFoundException();
         }
 
-        Method method = null;
-        for (Class<?> clazz = pageClass; method == null && clazz != null; clazz = clazz.getSuperclass()) {
-            try {
-                method = pageClass.getDeclaredMethod(route.getAction(), HttpServletRequest.class, Map.class);
-            } catch (NoSuchMethodException ignored) {
-                // No operations.
-            }
+        Method beforeAction = getMethod(pageClass, "before");
+        Method method = getMethod(pageClass, route.getAction());
+        Method afterAction = getMethod(pageClass, "after");
+
+        if (beforeAction == null) {
+            throw new ServletException("Can't find required method 'before' in " + pageClass);
+        }
+
+        if (afterAction == null) {
+            throw new ServletException("Can't find required method 'after' in " + pageClass);
         }
 
         if (method == null) {
@@ -152,7 +154,7 @@ public class FrontServlet extends HttpServlet {
 
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         Map<String, Object> view = new HashMap<>();
-        putUser(request, view);
+        runRequiredMethod(beforeAction, page, request, view);
 
         try {
             method.setAccessible(true);
@@ -186,6 +188,8 @@ public class FrontServlet extends HttpServlet {
             }
         }
 
+        runRequiredMethod(afterAction, page, request, view);
+
         if (json) {
             writeJson(response, view);
         } else {
@@ -204,10 +208,24 @@ public class FrontServlet extends HttpServlet {
         response.getWriter().print(new Gson().toJson(view));
     }
 
-    private void putUser(HttpServletRequest request, Map<String, Object> view) {
-        User user = (User) request.getSession().getAttribute("user");
-        if (user != null) {
-            view.put("user", user);
+    private Method getMethod(Class<?> pageClass, String methodName) {
+        Method method = null;
+        for (Class<?> clazz = pageClass; method == null && clazz != null; clazz = clazz.getSuperclass()) {
+            try {
+                method = clazz.getDeclaredMethod(methodName, HttpServletRequest.class, Map.class);
+            } catch (NoSuchMethodException ignored) {
+                // No operations.
+            }
+        }
+        return method;
+    }
+
+    private void runRequiredMethod(Method method, Object page, HttpServletRequest request, Map<String, Object> view) throws ServletException {
+        try {
+            method.setAccessible(true);
+            method.invoke(page, request, view);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new ServletException("Unable to run required method [pageClass=" + page.getClass() + ", method=" + method + "].", e);
         }
     }
 

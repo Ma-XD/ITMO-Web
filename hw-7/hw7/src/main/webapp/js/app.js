@@ -4,3 +4,25 @@ window.notify = function (message) {
         className: "success"
     });
 }
+
+window.ajax = function (data, $error, fun) {
+    $.ajax({
+        type: "POST",
+        url: "",
+        dataType: "json",
+        data: data,
+        success: function (response) {
+            if (response["error"]) {
+                $error.text(response["error"]);
+                return
+            }
+            if (fun) {
+                fun(response)
+                return;
+            }
+            if (response["redirect"]) {
+                location.href = response["redirect"];
+            }
+        }
+    });
+}

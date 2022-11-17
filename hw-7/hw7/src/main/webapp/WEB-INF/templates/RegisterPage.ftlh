@@ -35,25 +35,14 @@
             $(".registration form").submit(function () {
                 const login = $(this).find("input[name='login']").val();
                 const password = $(this).find("input[name='password']").val();
+                const data = {
+                    action: "register",
+                    login: login,
+                    password: password
+                };
                 const $error = $(this).find(".error");
 
-                $.ajax({
-                    type: "POST",
-                    url: "",
-                    dataType: "json",
-                    data: {
-                        action: "register",
-                        login: login,
-                        password: password
-                    },
-                    success: function (response) {
-                        if (response["error"]) {
-                            $error.text(response["error"]);
-                        } else {
-                            location.href = response["redirect"];
-                        }
-                    }
-                });
+                $.ajax(data, $error)
 
                 return false;
             });

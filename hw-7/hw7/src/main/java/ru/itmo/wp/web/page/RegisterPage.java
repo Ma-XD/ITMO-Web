@@ -9,13 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /** @noinspection unused*/
-public class RegisterPage {
-    private final UserService userService = new UserService();
-
-    private void action(HttpServletRequest request, Map<String, Object> view) {
-        // No operations.
-    }
-
+public class RegisterPage extends Page{
     private void register(HttpServletRequest request, Map<String, Object> view) throws ValidationException {
         User user = new User();
         user.setLogin(request.getParameter("login"));
@@ -24,7 +18,8 @@ public class RegisterPage {
         userService.validateRegistration(user, password);
         userService.register(user, password);
 
-        request.getSession().setAttribute("message", "You are successfully registered!");
+        setUser(user);
+        setMessage("You are successfully registered!");
         throw new RedirectException("/index");
     }
 }

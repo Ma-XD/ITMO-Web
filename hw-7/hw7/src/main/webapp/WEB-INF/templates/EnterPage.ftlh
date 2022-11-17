@@ -14,7 +14,7 @@
                         <label for="login">Login</label>
                     </div>
                     <div class="value">
-                        <input id="login" name="login" value="${login!}"/>
+                        <input id="login" name="login"/>
                     </div>
                 </div>
                 <div class="field">
@@ -22,18 +22,33 @@
                         <label for="password">Password</label>
                     </div>
                     <div class="value">
-                        <input id="password" name="password" type="password" value="${password!}"/>
+                        <input id="password" name="password" type="password"/>
                     </div>
                 </div>
-                <#if error??>
-                    <div class="error">
-                        ${error!}
-                    </div>
-                </#if>
+                <div class="error"></div>
                 <div class="button-field">
                     <input type="submit" value="Enter">
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        $(function () {
+            $(".registration form").submit(function () {
+                const login = $(this).find("input[name='login']").val();
+                const password = $(this).find("input[name='password']").val();
+                const data = {
+                    action: "enter",
+                    login: login,
+                    password: password
+                };
+                const $error = $(this).find(".error");
+
+                $.ajax(data, $error)
+
+                return false;
+            });
+        })
+    </script>
 </@c.page>
