@@ -2,6 +2,7 @@ package ru.itmo.wp.web.page;
 
 import com.google.common.base.Strings;
 import ru.itmo.wp.model.domain.User;
+import ru.itmo.wp.model.service.ArticleService;
 import ru.itmo.wp.model.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,8 @@ import java.util.Map;
 @SuppressWarnings({"unused"})
 public abstract class Page {
     protected final UserService userService = new UserService();
+    protected final ArticleService articleService = new ArticleService();
+
     private HttpServletRequest request;
     protected void action(HttpServletRequest request, Map<String, Object> view) {
         // No operations.
@@ -19,6 +22,9 @@ public abstract class Page {
         this.request = request;
         putUser(view);
         putMessage(view);
+    }
+
+    protected void after(HttpServletRequest request, Map<String, Object> view) {
     }
 
     private void putUser(Map<String, Object> view) {
@@ -50,8 +56,5 @@ public abstract class Page {
 
     protected String getMessage() {
         return (String) request.getSession().getAttribute("message");
-    }
-
-    protected void after(HttpServletRequest request, Map<String, Object> view) {
     }
 }

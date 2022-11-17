@@ -15,6 +15,8 @@ window.ajax = function (data, $error, fun) {
             if (response["error"]) {
                 $error.text(response["error"]);
                 return
+            } else {
+                $error.text(null)
             }
             if (fun) {
                 fun(response)

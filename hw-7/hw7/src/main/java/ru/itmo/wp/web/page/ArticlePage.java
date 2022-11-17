@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public class ArticlePage extends Page {
-    private final ArticleService articleService = new ArticleService();
 
     @Override
     protected void action(HttpServletRequest request, Map<String, Object> view) {
@@ -21,7 +20,7 @@ public class ArticlePage extends Page {
         }
     }
 
-    private void add(HttpServletRequest request, Map<String, Object> view) throws ValidationException {
+    private void create(HttpServletRequest request, Map<String, Object> view) throws ValidationException {
         User user = getUser();
         String title = request.getParameter("title");
         String text = request.getParameter("text");
@@ -31,9 +30,9 @@ public class ArticlePage extends Page {
         article.setUserId(user.getId());
         article.setTitle(title);
         article.setText(text);
-        articleService.add(article);
+        articleService.create(article);
 
-        setMessage("Article added");
+        view.put("message", "Article created");
     }
 }
 

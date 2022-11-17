@@ -42,7 +42,7 @@
                 };
                 const $error = $(this).find(".error");
 
-                $.ajax(data, $error)
+                ajax(data, $error)
 
                 return false;
             });

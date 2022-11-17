@@ -7,4 +7,8 @@ import java.util.Map;
 
 /** @noinspection unused*/
 public class IndexPage extends Page {
+
+    private void findAll(HttpServletRequest request, Map<String, Object> view) {
+        view.put("articles", articleService.findAll());
+    }
 }

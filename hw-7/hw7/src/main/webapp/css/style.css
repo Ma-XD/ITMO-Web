@@ -6,6 +6,8 @@
     --error-color: red;
     --datatable-color: #E1E1E1;
     --datatable-dark-cell-color: #f8f8f8;
+    --gray-color: #888;
+    --color-green: #008000;
     --message-border-color: #1E88E5;
     --message-background-color: #E3F2FD;
     color: var(--black-color);
@@ -128,6 +130,64 @@ aside section .footer a {
 
 aside section .footer a:after {
     content: " →";
+}
+
+.middle li {
+    list-style: none;
+}
+
+.articles .title, .articles .noData {
+    font-family: verdana, arial, sans-serif;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.articles .title {
+    margin-top: 2rem;
+    padding: 0;
+    color: var(--caption-color);
+}
+
+.articles .noData {
+    color: var(--gray-color);
+}
+
+.articles .body {
+    border-left: 4px solid var(--border-color);
+    padding-left: 0.75rem;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.articles .footer {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.35rem;
+    margin: 0.25rem 0 0 0;
+}
+
+.articles .footer .left, .right {
+    display: inline;
+}
+
+article .footer .left .positive-score {
+    font-weight: bold;
+    color: var(--color-green);
+    font-size: 1.1rem;
+    vertical-align: middle
+}
+
+.articles .footer .left img {
+    height: 1.3rem;
+    vertical-align: middle
+}
+
+.articles .footer .right {
+    font-size: 0.9rem;
+    float: right;
+}
+
+.articles .footer .right img {
+    height: 1rem;
 }
 
 .message {

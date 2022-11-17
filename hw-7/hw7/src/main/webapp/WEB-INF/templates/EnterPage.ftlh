@@ -4,8 +4,8 @@
 <#import "commons.ftlh" as c>
 
 <@c.page>
-    <div class="form-box">
-        <div class="header">Enter</div>
+    <div class="enter form-box">
+        <div class="header">Register</div>
         <div class="body">
             <form method="post" action="">
                 <input type="hidden" name="action" value="enter"/>
@@ -35,7 +35,7 @@
 
     <script>
         $(function () {
-            $(".registration form").submit(function () {
+            $(".enter form").submit(function () {
                 const login = $(this).find("input[name='login']").val();
                 const password = $(this).find("input[name='password']").val();
                 const data = {
@@ -45,7 +45,7 @@
                 };
                 const $error = $(this).find(".error");
 
-                $.ajax(data, $error)
+                ajax(data, $error)
 
                 return false;
             });

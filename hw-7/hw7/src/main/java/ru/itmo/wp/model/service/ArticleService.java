@@ -8,6 +8,8 @@ import ru.itmo.wp.model.repository.ArticleRepository;
 import ru.itmo.wp.model.repository.impl.ArticleRepositoryImpl;
 import ru.itmo.wp.web.exception.RedirectException;
 
+import java.util.List;
+
 public class ArticleService {
     private final ArticleRepository articleRepository = new ArticleRepositoryImpl();
     public void validateArticle(User user, String title, String text) throws ValidationException {
@@ -34,7 +36,11 @@ public class ArticleService {
         }
     }
 
-    public void add(Article article) {
+    public void create(Article article) {
         articleRepository.save(article);
+    }
+
+    public List<Article> findAll() {
+        return articleRepository.findAll();
     }
 }

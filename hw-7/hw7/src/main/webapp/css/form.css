@@ -48,3 +48,16 @@
     font-size: 0.75rem;
     margin-left: 12rem;
 }
+
+.article .form-box {
+    width: 100%;
+}
+
+.article .form-box .field .value input {
+    width: 8rem;
+}
+
+.article .form-box .field .value textarea {
+    max-width: 40rem;
+    max-height: 10rem;
+}

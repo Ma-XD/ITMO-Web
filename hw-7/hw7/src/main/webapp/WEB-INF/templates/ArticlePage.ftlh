@@ -1,60 +1,56 @@
 <#import "commons.ftlh" as c>
 
 <@c.page>
-<#--    <div class="article">-->
-<#--        <div class="form-box">-->
-<#--            <div class="header">Send message</div>-->
-<#--            <div class="body">-->
-<#--                <form method="post" action="">-->
-<#--                    <input type="hidden" name="action" value="send"/>-->
-<#--                    <div class="field">-->
-<#--                        <div class="name">-->
-<#--                            <label for="title">Send to</label>-->
-<#--                        </div>-->
-<#--                        <div class="value">-->
-<#--                            <div class="value">-->
-<#--                                <input id="title" name="title"/>-->
-<#--                            </div>-->
-<#--                        </div>-->
-<#--                    </div>-->
-<#--                    <div class="field">-->
-<#--                        <div class="name">-->
-<#--                            <label for="text">Text</label>-->
-<#--                        </div>-->
-<#--                        <div class="value">-->
-<#--                            <textarea id="text" name="text" type="text" value="${text!}"></textarea>-->
-<#--                        </div>-->
-<#--                    </div>-->
-<#--                    <div class="button-field">-->
-<#--                        <input type="submit" value="Send">-->
-<#--                    </div>-->
-<#--                </form>-->
-<#--            </div>-->
-<#--        </div>-->
-<#--        <div class="datatable">-->
-<#--            <div class="caption">Talk</div>-->
-<#--            <table>-->
-<#--                <thead>-->
-<#--                <tr>-->
-<#--                    <th>Id</th>-->
-<#--                    <th>From user</th>-->
-<#--                    <th>to user</th>-->
-<#--                    <th>Text</th>-->
-<#--                    <th>Created</th>-->
-<#--                </tr>-->
-<#--                </thead>-->
-<#--                <tbody>-->
-<#--                <#list talks as talk>-->
-<#--                    <tr>-->
-<#--                        <td>${talk.id}</td>-->
-<#--                        <td>${talk.fromUser}</td>-->
-<#--                        <td>${talk.toUser}</td>-->
-<#--                        <td>${talk.text}</td>-->
-<#--                        <td>${talk.creationTime}</td>-->
-<#--                    </tr>-->
-<#--                </#list>-->
-<#--                </tbody>-->
-<#--            </table>-->
-<#--        </div>-->
-<#--    </div>-->
+    <div class="article">
+        <div class="article form-box">
+            <div class="header">Create</div>
+            <div class="body">
+                <form method="post" action="">
+                    <input type="hidden" name="action" value="create"/>
+                    <div class="field">
+                        <div class="name">
+                            <label for="title">Title</label>
+                        </div>
+                        <div class="value">
+                            <input id="title" name="title"/>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="name">
+                            <label for="text">Text</label>
+                        </div>
+                        <div class="value">
+                            <textarea id="text" name="text"></textarea>
+                        </div>
+                    </div>
+                    <div class="error"></div>
+                    <div class="button-field">
+                        <input type="submit" value="Add">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $(".article form").submit(function () {
+                const title = $(this).find("input[name='title']").val();
+                const text = $(this).find("textarea[name='text']").val();
+                const data = {
+                    action: "create",
+                    title,
+                    text
+                };
+                const $error = $(this).find(".error");
+
+                ajax(data, $error, function (response) {
+                    console.log(response);
+                    notify(response["message"]);
+                })
+
+                return false;
+            });
+        })
+    </script>
 </@c.page>

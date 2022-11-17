@@ -68,7 +68,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     public List<Article> findAll() {
         List<Article> articles = new ArrayList<>();
         try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM Article ORDER BY id DESC")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM Article ORDER BY creationTime DESC")) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     Article article;
                     while ((article = toArticle(statement.getMetaData(), resultSet)) != null) {
