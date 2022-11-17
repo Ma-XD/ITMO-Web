@@ -63,7 +63,7 @@ public class UserService {
             throw new ValidationException("Password can't be longer than 64 characters");
         }
         if (!password.equals(passwordConfirmation)) {
-           throw new ValidationException("Passwords don't match");
+            throw new ValidationException("Passwords don't match");
         }
     }
 
@@ -122,12 +122,21 @@ public class UserService {
             throw new RedirectException("/index");
         }
         try {
-            Long.parseLong(stringTargetUserId);
+            long id = Long.parseLong(stringTargetUserId);
+            if (userRepository.find(id) == null) {
+                throw new ValidationException("Can't find target user");
+            }
         } catch (NumberFormatException e) {
-            throw new ValidationException("Recipient's id can be be only long type");
+            throw new ValidationException("Target user's id can be be only long type");
         }
         if (Strings.isNullOrEmpty(text)) {
             throw new ValidationException("Text is required");
+        }
+        if (text.trim().isEmpty()) {
+            throw new ValidationException("Text is required");
+        }
+        if (text.length() > 1024) {
+            throw new ValidationException("Text can't be longer than 1024 characters");
         }
     }
 

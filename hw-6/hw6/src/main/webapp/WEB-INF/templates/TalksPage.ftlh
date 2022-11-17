@@ -1,6 +1,7 @@
 <#-- @ftlvariable name="users" type="ru.itmo.wp.model.domain.User[]" -->
 <#-- @ftlvariable name="talks" type="ru.itmo.wp.model.dto.TalkDTO[]" -->
 <#-- @ftlvariable name="text" type="java.lang.String" -->
+<#-- @ftlvariable name="error" type="java.lang.String" -->
 <#import "commons.ftlh" as c>
 
 <@c.page>
@@ -30,6 +31,11 @@
                             <textarea id="text" name="text" type="text" value="${text!}"></textarea>
                         </div>
                     </div>
+                    <#if error??>
+                        <div class="error">
+                            ${error!}
+                        </div>
+                    </#if>
                     <div class="button-field">
                         <input type="submit" value="Send">
                     </div>
