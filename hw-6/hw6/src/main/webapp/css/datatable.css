@@ -17,6 +17,9 @@
     border: 1px solid var(--datatable-color);
     padding: 0.5em;
     font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 10rem;
 }
 
 .datatable tbody tr:nth-child(2n-1) {

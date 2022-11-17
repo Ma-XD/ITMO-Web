@@ -3,14 +3,20 @@ package ru.itmo.wp.model.service;
 import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 import ru.itmo.wp.model.domain.Event;
+import ru.itmo.wp.model.domain.Talk;
 import ru.itmo.wp.model.domain.User;
+import ru.itmo.wp.model.dto.TalkDTO;
 import ru.itmo.wp.model.exception.ValidationException;
 import ru.itmo.wp.model.repository.EventRepository;
+import ru.itmo.wp.model.repository.TalkRepository;
 import ru.itmo.wp.model.repository.UserRepository;
 import ru.itmo.wp.model.repository.impl.EventRepositoryImpl;
+import ru.itmo.wp.model.repository.impl.TalkRepositoryImpl;
 import ru.itmo.wp.model.repository.impl.UserRepositoryImpl;
+import ru.itmo.wp.web.exception.RedirectException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserService {
@@ -18,6 +24,7 @@ public class UserService {
 
     private final UserRepository userRepository = new UserRepositoryImpl();
     private final EventRepository eventRepository = new EventRepositoryImpl();
+    private final TalkRepository talkRepository = new TalkRepositoryImpl();
 
     public void validateRegistration(User user, String password, String passwordConfirmation) throws ValidationException {
         if (Strings.isNullOrEmpty(user.getLogin())) {
@@ -93,5 +100,38 @@ public class UserService {
 
     public int findCount() {
         return userRepository.findCount();
+    }
+
+    public List<TalkDTO> findTalks(long id) {
+        List<Talk> talks = talkRepository.findByUserId(id);
+        List<TalkDTO> talkDTOS = new ArrayList<>();
+        for (Talk talk : talks) {
+            talkDTOS.add(new TalkDTO(
+                    talk.getId(),
+                    userRepository.find(talk.getSourceUserId()).getLogin(),
+                    userRepository.find(talk.getTargetUserId()).getLogin(),
+                    talk.getText(),
+                    talk.getCreationTime()
+            ));
+        }
+        return talkDTOS;
+    }
+
+    public void validateSend(User sourceUser, String stringTargetUserId, String text) throws ValidationException {
+        if (sourceUser == null) {
+            throw new RedirectException("/index");
+        }
+        try {
+            Long.parseLong(stringTargetUserId);
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Recipient's id can be be only long type");
+        }
+        if (Strings.isNullOrEmpty(text)) {
+            throw new ValidationException("Text is required");
+        }
+    }
+
+    public void send(Talk talk) {
+        talkRepository.save(talk);
     }
 }

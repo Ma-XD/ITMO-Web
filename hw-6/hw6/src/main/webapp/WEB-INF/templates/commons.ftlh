@@ -34,6 +34,7 @@
         <ul>
             <li><a href="/index">Home</a></li>
             <li><a href="/users">Users</a></li>
+            <li><a href="/talks">Talks</a></li>
         </ul>
     </nav>
 </header>
