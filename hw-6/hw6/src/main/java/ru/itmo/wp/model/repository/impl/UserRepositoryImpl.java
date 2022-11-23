@@ -1,126 +1,65 @@
 package ru.itmo.wp.model.repository.impl;
 
-import ru.itmo.wp.model.database.DatabaseUtils;
+import ru.itmo.wp.model.domain.Entity;
 import ru.itmo.wp.model.domain.User;
-import ru.itmo.wp.model.exception.RepositoryException;
+import ru.itmo.wp.model.repository.BasicRepository;
 import ru.itmo.wp.model.repository.UserRepository;
 
-import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("SqlNoDataSourceInspection")
-public class UserRepositoryImpl implements UserRepository {
-    private final DataSource DATA_SOURCE = DatabaseUtils.getDataSource();
+public class UserRepositoryImpl extends BasicRepository implements UserRepository {
 
     @Override
     public User find(long id) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE id=?")) {
-                statement.setLong(1, id);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    return toUser(statement.getMetaData(), resultSet);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+        return (User) findByKey("id", id);
     }
 
     @Override
     public User findByLogin(String login) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE login=?")) {
-                statement.setString(1, login);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    return toUser(statement.getMetaData(), resultSet);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+        return (User) findByKey("login", login);
     }
 
     @Override
     public User findByEmail(String email) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE email=?")) {
-                statement.setString(1, email);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    return toUser(statement.getMetaData(), resultSet);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+        return (User) findByKey("email", email);
     }
+
     @Override
     public User findByLoginAndPasswordSha(String login, String passwordSha) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE login=? AND passwordSha=?")) {
-                statement.setString(1, login);
-                statement.setString(2, passwordSha);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    return toUser(statement.getMetaData(), resultSet);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+        return (User) findByKeys(new HashMap<String, Object>(){{
+            put("login", login);
+            put("passwordSha", passwordSha);
+        }});
     }
 
     @Override
     public User findByEmailAndPasswordSha(String email, String passwordSha) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE email=? AND passwordSha=?")) {
-                statement.setString(1, email);
-                statement.setString(2, passwordSha);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    return toUser(statement.getMetaData(), resultSet);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+        return (User) findByKeys(new HashMap<String, Object>(){{
+            put("email", email);
+            put("passwordSha", passwordSha);
+        }});
     }
 
     @Override
     public List<User> findAll() {
-        List<User> users = new ArrayList<>();
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User ORDER BY id DESC")) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    User user;
-                    while ((user = toUser(statement.getMetaData(), resultSet)) != null) {
-                        users.add(user);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
-        return users;
+        return findAllEntities().stream().map(it -> (User) it).collect(Collectors.toList());
     }
 
     @Override
-    public int findCount() {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM User")) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return resultSet.getInt(1);
-                    }
-                    return 0;
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+    public void save(User user, String passwordSha) {
+        saveByKeys(user, new HashMap<String, Object>(){{
+            put("login", user.getLogin());
+            put("email", user.getEmail());
+            put("passwordSha", passwordSha);
+        }});
     }
 
-
-    private User toUser(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
+    @Override
+    protected Entity toEntityImpl(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
         }
@@ -146,32 +85,5 @@ public class UserRepositoryImpl implements UserRepository {
         }
 
         return user;
-    }
-
-    @Override
-    public void save(User user, String passwordSha) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO `User` (`login`, `email`, `passwordSha`, `creationTime`) VALUES (?, ?, ?, NOW())",
-                    Statement.RETURN_GENERATED_KEYS
-            )) {
-                statement.setString(1, user.getLogin());
-                statement.setString(2, user.getEmail());
-                statement.setString(3, passwordSha);
-                if (statement.executeUpdate() != 1) {
-                    throw new RepositoryException("Can't save User.");
-                } else {
-                    ResultSet generatedKeys = statement.getGeneratedKeys();
-                    if (generatedKeys.next()) {
-                        user.setId(generatedKeys.getLong(1));
-                        user.setCreationTime(find(user.getId()).getCreationTime());
-                    } else {
-                        throw new RepositoryException("Can't save User [no autogenerated fields].");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't save User.", e);
-        }
     }
 }

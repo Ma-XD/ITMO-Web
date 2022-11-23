@@ -1,21 +1,11 @@
 package ru.itmo.wp.model.domain;
 
-import java.util.Date;
+import java.io.Serializable;
 
-public class Talk {
-    private long id;
+public class Talk extends Entity implements Serializable {
     private long sourceUserId;
     private long targetUserId;
     private String text;
-    private Date creationTime;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public long getSourceUserId() {
         return sourceUserId;
@@ -39,13 +29,5 @@ public class Talk {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public Date getCreationTime() {
-        return creationTime;
-    }
-
-    public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
     }
 }
