@@ -17,7 +17,7 @@ public interface UserRepository {
 
     List<User> findAll();
 
-    int findCount();
+    int countAll();
 
     void save(User user, String passwordSha);
 }

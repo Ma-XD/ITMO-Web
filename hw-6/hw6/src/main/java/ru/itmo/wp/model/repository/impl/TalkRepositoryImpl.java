@@ -1,20 +1,18 @@
 package ru.itmo.wp.model.repository.impl;
 
-import ru.itmo.wp.model.database.DatabaseUtils;
 import ru.itmo.wp.model.domain.Entity;
 import ru.itmo.wp.model.domain.Talk;
-import ru.itmo.wp.model.exception.RepositoryException;
 import ru.itmo.wp.model.repository.BasicRepository;
 import ru.itmo.wp.model.repository.TalkRepository;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TalkRepositoryImpl extends BasicRepository implements TalkRepository {
-    private final DataSource DATA_SOURCE = DatabaseUtils.getDataSource();
 
     @Override
     public Talk find(long id) {
@@ -23,28 +21,18 @@ public class TalkRepositoryImpl extends BasicRepository implements TalkRepositor
 
     @Override
     public List<Talk> findByUserId(long userId) {
-        List<Talk> talks = new ArrayList<>();
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM Talk WHERE sourceUserId=? OR targetUserId=? ORDER BY id DESC")) {
-                statement.setLong(1, userId);
-                statement.setLong(2, userId);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    Talk talk;
-                    while ((talk = (Talk) toEntityImpl(statement.getMetaData(), resultSet)) != null) {
-                        talks.add(talk);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find Talk.", e);
-        }
-        return talks;
+        return findAllByKeys(new HashMap<String, Object>() {{
+            put("sourceUserId", userId);
+            put("targetUserId", userId);
+        }}, "OR")
+                .stream()
+                .map(it -> (Talk) it)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void save(Talk talk) {
-        saveByKeys(talk, new HashMap<String, Object>(){{
+        saveByKeys(talk, new HashMap<String, Object>() {{
             put("sourceUserId", talk.getSourceUserId());
             put("targetUserId", talk.getTargetUserId());
             put("text", talk.getText());

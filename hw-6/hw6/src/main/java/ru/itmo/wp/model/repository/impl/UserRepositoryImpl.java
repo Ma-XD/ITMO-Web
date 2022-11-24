@@ -30,28 +30,31 @@ public class UserRepositoryImpl extends BasicRepository implements UserRepositor
 
     @Override
     public User findByLoginAndPasswordSha(String login, String passwordSha) {
-        return (User) findByKeys(new HashMap<String, Object>(){{
+        return (User) findByKeys(new HashMap<String, Object>() {{
             put("login", login);
             put("passwordSha", passwordSha);
-        }});
+        }}, "AND");
     }
 
     @Override
     public User findByEmailAndPasswordSha(String email, String passwordSha) {
-        return (User) findByKeys(new HashMap<String, Object>(){{
+        return (User) findByKeys(new HashMap<String, Object>() {{
             put("email", email);
             put("passwordSha", passwordSha);
-        }});
+        }}, "AND");
     }
 
     @Override
     public List<User> findAll() {
-        return findAllEntities().stream().map(it -> (User) it).collect(Collectors.toList());
+        return findAllByKeys(new HashMap<>(), null)
+                .stream()
+                .map(it -> (User) it)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void save(User user, String passwordSha) {
-        saveByKeys(user, new HashMap<String, Object>(){{
+        saveByKeys(user, new HashMap<String, Object>() {{
             put("login", user.getLogin());
             put("email", user.getEmail());
             put("passwordSha", passwordSha);

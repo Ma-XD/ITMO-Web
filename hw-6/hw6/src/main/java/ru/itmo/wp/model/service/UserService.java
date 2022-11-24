@@ -99,7 +99,7 @@ public class UserService {
     }
 
     public int findCount() {
-        return userRepository.findCount();
+        return userRepository.countAll();
     }
 
     public List<TalkDTO> findTalks(long id) {

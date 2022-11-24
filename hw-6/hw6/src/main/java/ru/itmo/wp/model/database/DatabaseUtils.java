@@ -20,6 +20,36 @@ public class DatabaseUtils {
 
     private final static String REPOSITORY_IMPL = "RepositoryImpl";
 
+    public static String getEntityName(String repoName) {
+        if (repoName.matches("[A-Za-z]+" + REPOSITORY_IMPL)) {
+            return repoName.replace(REPOSITORY_IMPL, "");
+        }
+        throw new RepositoryException("Incorrect name of repository for " + repoName + "." +
+                "It can be only XxxRepositoryImpl");
+    }
+
+    public static String getSQLSelect(String entityName, Set<String> keySet, String separator) {
+        String sql = "SELECT * FROM " + entityName;
+        if (!keySet.isEmpty()) {
+            sql += " WHERE " + String.join("=? " + separator + " ", keySet) + "=?";
+        }
+        return sql;
+    }
+
+    public static String getSQLInsert(String entityName, Set<String> keySet) {
+        StringBuilder prefix = new StringBuilder();
+        StringBuilder suffix = new StringBuilder();
+        prefix.append("INSERT INTO `").append(entityName).append("` (");
+        suffix.append("VALUES (");
+        for (String key : keySet) {
+            prefix.append("`").append(key).append("`, ");
+            suffix.append("?, ");
+        }
+        prefix.append("`creationTime`)");
+        suffix.append("NOW())");
+        return prefix + " " + suffix;
+    }
+
     public static void setStatement(PreparedStatement statement, Object... args) throws SQLException {
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
@@ -46,34 +76,6 @@ public class DatabaseUtils {
             return String.class;
         }
         return arg.getClass();
-    }
-
-    public static String getEntityName(String repoName) {
-        if (repoName.matches("[A-Za-z]+" + REPOSITORY_IMPL)) {
-            return repoName.replace(REPOSITORY_IMPL, "");
-        }
-        throw new RepositoryException("Incorrect name of repository for " + repoName + "." +
-                "It can be only *RepositoryImpl");
-    }
-
-    public static String getSelectStringSQL(String entityName, Set<String> keySet) {
-        String delimiter = "AND";
-        return "SELECT * FROM " + entityName + " WHERE " +
-                String.join("=? " + delimiter + " ", keySet) + "=?";
-    }
-
-    public static String getInsertStringSQL(String entityName, Set<String> keySet) {
-        StringBuilder prefix = new StringBuilder();
-        StringBuilder suffix = new StringBuilder();
-        prefix.append("INSERT INTO `").append(entityName).append("` (");
-        suffix.append("VALUES (");
-        for (String key : keySet) {
-            prefix.append("`").append(key).append("`, ");
-            suffix.append("?, ");
-        }
-        prefix.append("`creationTime`)");
-        suffix.append("NOW())");
-        return prefix + " " + suffix;
     }
 
     private static final class DataSourceHolder {
