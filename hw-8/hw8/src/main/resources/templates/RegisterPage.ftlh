@@ -1,3 +1,5 @@
+<#-- @ftlvariable name="registerForm" type="ru.itmo.wp.form.UserCredentials" -->
+<#import "/spring.ftl" as spring>
 <#import "commons.ftlh" as c>
 
 <@c.page>
@@ -23,7 +25,6 @@
                     </div>
                     <@c.error "registerForm.password"/>
                 </div>
-                <div class="error"></div>
                 <div class="button-field">
                     <input type="submit" value="Register">
                 </div>

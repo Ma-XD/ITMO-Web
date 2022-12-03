@@ -3,7 +3,11 @@ package ru.itmo.wp.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.itmo.wp.service.UserService;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class UsersPage extends Page {
@@ -17,5 +21,15 @@ public class UsersPage extends Page {
     public String users(Model model) {
         model.addAttribute("users", userService.findAll());
         return "UsersPage";
+    }
+
+    @PostMapping("/users/all")
+    public String setStatus(@RequestParam long userId, @RequestParam boolean newStatus, HttpSession httpSession) {
+        if (getUser(httpSession) == null) {
+            setMessage(httpSession, "You should enter to set status for other users");
+        } else {
+            userService.setDisabledById(userId, newStatus);
+        }
+        return "redirect:/users/all";
     }
 }

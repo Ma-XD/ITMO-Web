@@ -78,6 +78,10 @@ header nav ul li a {
     overflow: auto;
 }
 
+.middle li {
+    list-style: none;
+}
+
 aside {
     float: right;
     width: 20rem;
@@ -98,11 +102,12 @@ aside section {
     border: 1px solid var(--border-color);
     border-top-left-radius: var(--border-radius);
     border-top-right-radius: var(--border-radius);
+    margin-bottom: 1rem;
 }
 
 aside section .header {
     border-bottom: 1px solid var(--border-color);
-    padding: 0.25rem;
+    padding: 0.25rem 0.5rem;
     font-weight: bold;
     color: var(--caption-color);
 }
@@ -113,6 +118,7 @@ aside section .header:before {
 
 aside section .body {
     padding: 1rem;
+    overflow-wrap: break-word;
 }
 
 aside section .footer {

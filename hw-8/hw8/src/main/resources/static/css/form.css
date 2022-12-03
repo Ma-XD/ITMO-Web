@@ -43,6 +43,10 @@
     padding: 0.1rem 1.5rem;
 }
 
+.form-box .field textarea {
+    max-width: 15rem;
+}
+
 .form-box .error {
     clear: both;
     color: var(--error-color);

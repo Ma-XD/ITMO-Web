@@ -31,15 +31,23 @@ public class EnterPage extends Page {
     }
 
     @GetMapping("/enter")
-    public String register(Model model) {
+    public String enterGet(Model model, HttpSession httpSession) {
+        if (getUser(httpSession) != null) {
+            setMessage(httpSession, "You are already logged");
+            return "redirect:/";
+        }
         model.addAttribute("enterForm", new UserCredentials());
         return "EnterPage";
     }
 
     @PostMapping("/enter")
-    public String register(@Valid @ModelAttribute("enterForm") UserCredentials enterForm,
+    public String enterPost(@Valid @ModelAttribute("enterForm") UserCredentials enterForm,
                            BindingResult bindingResult,
                            HttpSession httpSession) {
+        if (getUser(httpSession) != null) {
+            setMessage(httpSession, "You are already logged");
+            return "redirect:/";
+        }
         if (bindingResult.hasErrors()) {
             return "EnterPage";
         }

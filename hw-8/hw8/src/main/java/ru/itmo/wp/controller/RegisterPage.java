@@ -31,7 +31,11 @@ public class RegisterPage extends Page {
     }
 
     @GetMapping("/register")
-    public String registerGet(Model model) {
+    public String registerGet(Model model, HttpSession httpSession) {
+        if (getUser(httpSession) != null) {
+            setMessage(httpSession, "You are already registered");
+            return "redirect:/";
+        }
         model.addAttribute("registerForm", new UserCredentials());
         return "RegisterPage";
     }
@@ -40,6 +44,10 @@ public class RegisterPage extends Page {
     public String registerPost(@Valid @ModelAttribute("registerForm") UserCredentials registerForm,
                                BindingResult bindingResult,
                                HttpSession httpSession) {
+        if (getUser(httpSession) != null) {
+            setMessage(httpSession, "You are already registered");
+            return "redirect:/";
+        }
         if (bindingResult.hasErrors()) {
             return "RegisterPage";
         }
