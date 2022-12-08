@@ -1,4 +1,5 @@
 <#-- @ftlvariable name="post" type="ru.itmo.wp.domain.Post" -->
+<#-- @ftlvariable name="tags" type="ru.itmo.wp.form.TagsSource" -->
 
 <#import "/spring.ftl" as spring>
 <#import "commons.ftlh" as c>
@@ -17,6 +18,15 @@
                         <input autofocus id="title" name="title" value="${post.title!}"/>
                     </div>
                     <@c.error "post.title"/>
+                </div>
+                <div class="field">
+                    <div class="name">
+                        <label for="source">Tags</label>
+                    </div>
+                    <div class="value">
+                        <input autofocus id="source" name="source" value="${tags.source!}"/>
+                    </div>
+                    <@c.error "tags.source"/>
                 </div>
                 <div class="field">
                     <div class="name">
