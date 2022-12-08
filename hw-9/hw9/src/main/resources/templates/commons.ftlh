@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Codeforces</title>
-    <link rel="icon" type="image/png" href="<@spring.url '/favicon.png'/>" />
+    <link rel="icon" type="image/png" href="<@spring.url '/favicon.png'/>"/>
     <link rel="stylesheet" type="text/css" href="<@spring.url '/css/normalize.css'/>">
     <link rel="stylesheet" type="text/css" href="<@spring.url '/css/style.css'/>">
     <link rel="stylesheet" type="text/css" href="<@spring.url '/css/form.css'/>">
@@ -95,9 +95,13 @@
         </div>
         <div class="information">By ${post.user.login}, ${post.creationTime}</div>
         <div class="body">${post.text}</div>
-        <ul class="attachment">
-            <li>Announcement of <a href="#">Codeforces Round #510 (Div. 1)</a></li>
-            <li>Announcement of <a href="#">Codeforces Round #510 (Div. 2)</a></li>
+        <ul class="tags">
+            <li><img src="<@spring.url '/img/tags.png'/>" title="Tags" alt="Tags"/></li>
+            <#if post.tags?has_content>
+                <#list post.tags as tag>
+                    <li>#${tag.name},</li>
+                </#list>
+            </#if>
         </ul>
         <div class="footer">
             <div class="left">

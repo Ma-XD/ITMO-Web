@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /** @noinspection unused*/
 @Entity
@@ -41,6 +42,12 @@ public class Post {
 
     @CreationTimestamp
     private Date creationTime;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "post_tag",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags;
 
     public long getId() {
         return id;
@@ -92,5 +99,17 @@ public class Post {
 
     public void addComment(Comment comment) {
         getComments().add(comment);
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        getTags().add(tag);
     }
 }

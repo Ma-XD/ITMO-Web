@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.itmo.wp.domain.Comment;
 import ru.itmo.wp.domain.Post;
 import ru.itmo.wp.domain.User;
-import ru.itmo.wp.repository.CommentRepository;
 import ru.itmo.wp.repository.PostRepository;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
 
-    public PostService(PostRepository postRepository, CommentRepository commentRepository) {
+    public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
 
