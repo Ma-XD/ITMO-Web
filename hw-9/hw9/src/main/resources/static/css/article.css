@@ -31,9 +31,7 @@ main article .tags {
     margin: 0.5rem 0 0 0;
 }
 
-main article .tags li {
-    display: inline;
-    list-style: none;
+main article .tags{
     padding: 0.25rem 0 0.25rem 0.15rem;
     margin: 0;
     font-size: 0.85rem;

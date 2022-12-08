@@ -96,11 +96,9 @@
         <div class="information">By ${post.user.login}, ${post.creationTime}</div>
         <div class="body">${post.text}</div>
         <ul class="tags">
-            <li><img src="<@spring.url '/img/tags.png'/>" title="Tags" alt="Tags"/></li>
             <#if post.tags?has_content>
-                <#list post.tags as tag>
-                    <li>#${tag.name},</li>
-                </#list>
+                <img src="<@spring.url '/img/tags.png'/>" title="Tags" alt="Tags"/>
+                ${post.tags?map(tag -> "#" + tag.name)?join(", ")}
             </#if>
         </ul>
         <div class="footer">
