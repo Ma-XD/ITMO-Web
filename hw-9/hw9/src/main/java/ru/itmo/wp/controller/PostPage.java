@@ -42,7 +42,13 @@ public class PostPage extends Page {
     }
 
     @AnyRole({Role.Name.ADMIN, Role.Name.WRITER})
-    @PostMapping("/post/{id}")
+    @GetMapping("/post/{id}/comment")
+    public String getWriteComment(@PathVariable String id) {
+        return "redirect:/post/{id}";
+    }
+
+    @AnyRole({Role.Name.ADMIN, Role.Name.WRITER})
+    @PostMapping("/post/{id}/comment")
     public String postWriteComment(@PathVariable String id,
                                    @Valid @ModelAttribute("comment") Comment comment,
                                    BindingResult bindingResult,
@@ -60,6 +66,6 @@ public class PostPage extends Page {
         }
         postService.writeComment(post, getUser(httpSession), comment);
         putMessage(httpSession, "You published new comment");
-        return "PostPage";
+        return "redirect:/post/{id}";
     }
 }

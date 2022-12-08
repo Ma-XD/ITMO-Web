@@ -10,7 +10,7 @@
             <div class="form">
                 <div class="header">Write comment</div>
                 <div class="body">
-                    <form method="post" action="">
+                    <form method="post" action="/post/${post.id}/comment" >
                         <div class="field">
                             <div class="value">
                                 <label>

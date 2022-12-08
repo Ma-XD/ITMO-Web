@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.itmo.wp.domain.Post;
 import ru.itmo.wp.domain.Role;
 import ru.itmo.wp.domain.User;
+import ru.itmo.wp.form.PostFormDTO;
 import ru.itmo.wp.form.UserCredentials;
 import ru.itmo.wp.repository.RoleRepository;
 import ru.itmo.wp.repository.UserRepository;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Service
 public class UserService {
+    private final PostService postService;
     private final UserRepository userRepository;
 
     /**
@@ -19,7 +21,8 @@ public class UserService {
      */
     private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(PostService postService, UserRepository userRepository, RoleRepository roleRepository) {
+        this.postService = postService;
         this.userRepository = userRepository;
 
         this.roleRepository = roleRepository;
@@ -54,7 +57,8 @@ public class UserService {
         return userRepository.findAllByOrderByIdDesc();
     }
 
-    public void writePost(User user, Post post) {
+    public void writePost(User user, PostFormDTO postFormDTO) {
+        Post post = postService.getPostFromDTO(postFormDTO);
         user.addPost(post);
         post.setUser(user);
         userRepository.save(user);

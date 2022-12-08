@@ -1,5 +1,4 @@
-<#-- @ftlvariable name="post" type="ru.itmo.wp.domain.Post" -->
-<#-- @ftlvariable name="tags" type="ru.itmo.wp.form.TagsSource" -->
+<#-- @ftlvariable name="postFormDTO" type="ru.itmo.wp.form.PostFormDTO" -->
 
 <#import "/spring.ftl" as spring>
 <#import "commons.ftlh" as c>
@@ -15,27 +14,27 @@
                         <label for="title">Title</label>
                     </div>
                     <div class="value">
-                        <input autofocus id="title" name="title" value="${post.title!}"/>
+                        <input autofocus id="title" name="title" value="${postFormDTO.title!}"/>
                     </div>
-                    <@c.error "post.title"/>
-                </div>
-                <div class="field">
-                    <div class="name">
-                        <label for="source">Tags</label>
-                    </div>
-                    <div class="value">
-                        <input autofocus id="source" name="source" value="${tags.source!}"/>
-                    </div>
-                    <@c.error "tags.source"/>
+                    <@c.error "postFormDTO.title"/>
                 </div>
                 <div class="field">
                     <div class="name">
                         <label for="text">Text</label>
                     </div>
                     <div class="value">
-                        <textarea id="text" name="text">${post.text!}</textarea>
+                        <textarea id="text" name="text">${postFormDTO.text!}</textarea>
                     </div>
-                    <@c.error "post.text"/>
+                    <@c.error "postFormDTO.text"/>
+                </div>
+                <div class="field">
+                    <div class="name">
+                        <label for="tagsLine">Tags</label>
+                    </div>
+                    <div class="value">
+                        <input autofocus id="tagsLine" name="tagsLine" value="${postFormDTO.tagsLine!}"/>
+                    </div>
+                    <@c.error "postFormDTO.tagsLine"/>
                 </div>
                 <div class="button-field">
                     <input type="submit" value="Write">
