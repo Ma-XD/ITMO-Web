@@ -7,9 +7,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /** @noinspection unused*/
 @Entity
@@ -101,8 +103,8 @@ public class Post {
         getComments().add(comment);
     }
 
-    public Set<Tag> getTags() {
-        return tags;
+    public List<Tag> getTags() {
+        return tags.stream().sorted(Comparator.comparing(Tag::getName)).collect(Collectors.toList());
     }
 
     public void setTags(Set<Tag> tags) {

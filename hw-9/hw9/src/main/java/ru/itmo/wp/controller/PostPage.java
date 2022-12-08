@@ -46,18 +46,20 @@ public class PostPage extends Page {
     public String postWriteComment(@PathVariable String id,
                                    @Valid @ModelAttribute("comment") Comment comment,
                                    BindingResult bindingResult,
+                                   Model model,
                                    HttpSession httpSession,
                                    HttpServletResponse response) {
+        Post post = postService.findById(UrlUtil.getLongIdOrNull(id));
+        model.addAttribute("post", post);
         if (bindingResult.hasErrors()) {
             return "PostPage";
         }
-        Post post = postService.findById(UrlUtil.getLongIdOrNull(id));
         if (post == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return "PostPage";
         }
         postService.writeComment(post, getUser(httpSession), comment);
         putMessage(httpSession, "You published new comment");
-        return "redirect:" + id;
+        return "PostPage";
     }
 }
