@@ -57,7 +57,7 @@
 .form .header {
     color: var(--caption-color);
     font-weight: bold;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     margin-bottom: 1rem;
 }
 
@@ -74,10 +74,11 @@
 
 .form .field input, .form .field textarea {
     width: 100%;
+    max-width: 53rem;
 }
 
 .form .field textarea {
-    min-height: 15rem;
+    min-height: 10rem;
 }
 
 .form .button-field {

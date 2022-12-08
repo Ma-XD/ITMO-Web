@@ -5,6 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,8 @@ public class User {
 
     @NotNull
     @NotEmpty
+    @Size(min = 2, max = 16)
+    @Pattern(regexp = "[a-z]+", message = "Only lowercase latin letters expected")
     private String login;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

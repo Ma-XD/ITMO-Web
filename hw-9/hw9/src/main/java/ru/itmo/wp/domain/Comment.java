@@ -8,36 +8,29 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.List;
 
 /** @noinspection unused*/
 @Entity
 @Table(indexes = @Index(columnList = "creationTime"))
-public class Post {
+public class Comment {
     @Id
     @GeneratedValue
     private long id;
+
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    @Size(min = 1, max = 4096)
+    @Lob
+    private String text;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotNull
-    @NotEmpty
-    @Size(min = 1, max = 60)
-    @NotBlank
-    private String title;
-
-    @NotNull
-    @NotEmpty
-    @Size(min = 1, max = 65000)
-    @NotBlank
-    @Lob
-    private String text;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @OrderBy("creationTime desc")
-    private List<Comment> comments;
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @CreationTimestamp
     private Date creationTime;
@@ -50,22 +43,6 @@ public class Post {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getText() {
         return text;
     }
@@ -74,12 +51,20 @@ public class Post {
         this.text = text;
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public User getUser() {
+        return user;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public Date getCreationTime() {
@@ -88,9 +73,5 @@ public class Post {
 
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
-    }
-
-    public void addComment(Comment comment) {
-        getComments().add(comment);
     }
 }
