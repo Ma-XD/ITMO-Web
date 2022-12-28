@@ -4,8 +4,10 @@
         <main>
             <Index v-if="page === 'Index'"/>
             <Enter v-if="page === 'Enter'"/>
+            <Register v-if="page === 'Register'"/>
             <WritePost v-if="page === 'WritePost'"/>
             <EditPost v-if="page === 'EditPost'"/>
+            <Users v-if="page === 'Users'" :users="users"/>
         </main>
     </div>
 </template>
@@ -16,6 +18,8 @@ import Index from "./page/Index";
 import Enter from "./page/Enter";
 import WritePost from "./page/WritePost";
 import EditPost from "./page/EditPost";
+import Register from "./page/Register";
+import Users from "@/components/page/Users.vue";
 
 export default {
     name: "Middle",
@@ -25,13 +29,15 @@ export default {
         }
     },
     components: {
+        Users,
         WritePost,
         Enter,
+        Register,
         Index,
         Sidebar,
         EditPost
     },
-    props: ["posts"],
+    props: ["users", "posts"],
     computed: {
         viewPosts: function () {
             return Object.values(this.posts).sort((a, b) => b.id - a.id).slice(0, 2);

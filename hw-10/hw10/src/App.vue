@@ -1,8 +1,8 @@
 <template>
     <div id="app">
         <Header :userId="userId" :users="users"/>
-        <Middle :posts="posts"/>
-        <Footer/>
+        <Middle :users="users" :posts="posts"/>
+        <Footer :countUsers="countUsers" :countPosts="countPosts"/>
     </div>
 </template>
 
@@ -21,6 +21,14 @@ export default {
     data: function () {
         return this.$root.$data;
     },
+    computed: {
+        countUsers: function () {
+            return Object.values(this.users).length
+        },
+        countPosts: function () {
+            return Object.values(this.posts).length
+        }
+    },
     beforeCreate() {
         this.$root.$on("onEnter", (login, password) => {
             if (password === "") {
@@ -33,6 +41,33 @@ export default {
                 this.$root.$emit("onEnterValidationError", "No such user");
             } else {
                 this.userId = users[0].id;
+                this.$root.$emit("onChangePage", "Index");
+            }
+        });
+
+        this.$root.$on("onRegister", (login, name) => {
+            if (login === "" || login.trim().length < 3 || login.trim().length > 16) {
+                this.$root.$emit("onRegisterValidationError", "Login can have length in 3..16");
+                return;
+            }
+            if (!/^[a-z]+$/.test(login)) {
+                this.$root.$emit("onRegisterValidationError", "Login can have only latin letters");
+                return;
+            }
+            if (name === "" || name.trim().length < 1 || name.trim().length > 32) {
+                this.$root.$emit("onRegisterValidationError", "Name can have length in 1..32");
+                return;
+            }
+
+            const users = Object.values(this.users).filter(u => u.login === login);
+            if (users.length !== 0) {
+                this.$root.$emit("onRegisterValidationError", "Login is already in use");
+            } else {
+                const id = Math.max(...Object.keys(this.users)) + 1;
+                this.$root.$set(this.users, id, {
+                    id, login, name, admin: false
+                });
+                this.userId = id;
                 this.$root.$emit("onChangePage", "Index");
             }
         });
