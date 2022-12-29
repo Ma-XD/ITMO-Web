@@ -3,6 +3,7 @@ package ru.itmo.wp.service;
 import org.springframework.stereotype.Service;
 import ru.itmo.wp.domain.Post;
 import ru.itmo.wp.domain.User;
+import ru.itmo.wp.form.UserCredentials;
 import ru.itmo.wp.repository.UserRepository;
 
 import java.util.List;
@@ -25,5 +26,23 @@ public class UserService {
 
     public List<User> findAll() {
         return userRepository.findAllByOrderByIdDesc();
+    }
+
+    public boolean isLoginVacant(String login) {
+        return userRepository.countByLogin(login) == 0;
+    }
+
+    public User register(UserCredentials userCredentials) {
+        User user = new User();
+        user.setLogin(userCredentials.getLogin().trim());
+        user.setName(userCredentials.getName().trim());
+        userRepository.save(user);
+        userRepository.updatePasswordSha(user.getId(), userCredentials.getLogin(), userCredentials.getPassword());
+        return user;
+    }
+
+    public void writePost(Post post, User user) {
+        user.addPost(post);
+        userRepository.save(user);
     }
 }

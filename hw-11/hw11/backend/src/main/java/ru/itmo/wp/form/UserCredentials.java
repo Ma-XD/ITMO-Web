@@ -1,17 +1,19 @@
 package ru.itmo.wp.form;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class UserCredentials {
-    @NotEmpty
+    @NotBlank
     @Size(min = 2, max = 24)
-    @Pattern(regexp = "[a-zA-Z]{2,24}", message = "Expected Latin letters")
+    @Pattern(regexp = "[a-zA-Z]+", message = "Expected letters A-Z or a-z")
     private String login;
+    private String name;
 
-    @NotEmpty
-    @Size(min = 1, max = 60)
+    @NotBlank
+    @Size(min = 3, max = 60)
     private String password;
 
     public String getLogin() {
@@ -28,5 +30,13 @@ public class UserCredentials {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

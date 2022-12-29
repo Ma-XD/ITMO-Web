@@ -3,22 +3,27 @@ package ru.itmo.wp.domain;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
+/** @noinspection unused*/
 @Entity
+@Table(indexes = @Index(columnList = "creationTime"))
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotEmpty
+    @NotBlank
     @Size(min = 1, max = 100)
     private String title;
 
 
     @NotEmpty
+    @NotBlank
     @Size(min = 1, max = 10000)
     @Lob
     private String text;

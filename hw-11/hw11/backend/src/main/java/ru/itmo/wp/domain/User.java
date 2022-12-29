@@ -1,5 +1,6 @@
 package ru.itmo.wp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -17,12 +18,12 @@ public class User {
     private long id;
 
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @Size(min = 2, max = 60)
     private String name;
 
     @NotEmpty
     @Size(min = 2, max = 24)
-    @Pattern(regexp = "[a-zA-Z]{2,24}")
+    @Pattern(regexp = "[a-zA-Z]+")
     private String login;
 
     private boolean admin;
@@ -30,7 +31,9 @@ public class User {
     @CreationTimestamp
     private Date creationTime;
 
-    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OrderBy("creationTime desc")
     private List<Post> posts;
 
     public long getId() {
@@ -73,8 +76,16 @@ public class User {
         this.creationTime = creationTime;
     }
 
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
     public void addPost(Post post) {
-        posts.add(post);
+        getPosts().add(post);
         post.setUser(this);
     }
 }

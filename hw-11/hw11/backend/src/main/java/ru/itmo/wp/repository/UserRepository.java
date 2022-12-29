@@ -9,6 +9,9 @@ import ru.itmo.wp.domain.User;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    int countByLogin(String login);
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE user SET password_sha=SHA1(CONCAT('8960c201fb3136ef', ?2, ?3)) WHERE id=?1", nativeQuery = true)
