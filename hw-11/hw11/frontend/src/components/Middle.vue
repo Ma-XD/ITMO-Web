@@ -2,9 +2,11 @@
     <div class="middle">
         <Sidebar :posts="viewPosts"/>
         <main>
-            <Index v-if="page === 'Index'"/>
+            <Index v-if="page === 'Index'" :posts="posts"/>
             <Enter v-if="page === 'Enter'"/>
             <Register v-if="page === 'Register'"/>
+            <Users v-if="page === 'Users'" :users="users"/>
+            <WritePost v-if="page === 'WritePost'" :user="user"/>
         </main>
     </div>
 </template>
@@ -14,6 +16,8 @@ import Sidebar from "./sidebar/Sidebar";
 import Index from "./main/Index";
 import Enter from "./main/Enter";
 import Register from "./main/Register";
+import Users from "@/components/page/Users.vue";
+import WritePost from "@/components/page/WritePost.vue";
 
 export default {
     name: "Middle",
@@ -23,17 +27,20 @@ export default {
         }
     },
     components: {
+        WritePost,
+        Users,
         Register,
         Enter,
         Index,
         Sidebar
     },
-    props: ["posts"],
+    props: ["user", "posts", "users"],
     computed: {
         viewPosts: function () {
             return Object.values(this.posts).sort((a, b) => b.id - a.id).slice(0, 2);
         }
-    }, beforeCreate() {
+    },
+    beforeCreate() {
         this.$root.$on("onChangePage", (page) => this.page = page)
     }
 }
